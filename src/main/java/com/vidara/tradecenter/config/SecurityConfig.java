@@ -27,18 +27,17 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CorsConfigurationSource corsConfigurationSource;  // INJECT the bean
+    private final CorsConfigurationSource corsConfigurationSource; // INJECT the bean
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
-                          JwtAuthEntryPoint jwtAuthEntryPoint,
-                          JwtAuthenticationFilter jwtAuthenticationFilter,
-                          CorsConfigurationSource corsConfigurationSource) {  // ADD parameter
+            JwtAuthEntryPoint jwtAuthEntryPoint,
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            CorsConfigurationSource corsConfigurationSource) { // ADD parameter
         this.userDetailsService = userDetailsService;
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.corsConfigurationSource = corsConfigurationSource;  // ASSIGN
+        this.corsConfigurationSource = corsConfigurationSource; // ASSIGN
     }
-
 
     // PASSWORD ENCODER
 
@@ -46,7 +45,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     // AUTHENTICATION PROVIDER
 
@@ -58,14 +56,12 @@ public class SecurityConfig {
         return authProvider;
     }
 
-
     // AUTHENTICATION MANAGER
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
 
     // SECURITY FILTER CHAIN
     @Bean
@@ -122,23 +118,22 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")// temp for testing //permitAll()
 
                         // Admin API endpoints
-                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/products", "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/categories", "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.POST, "/api/brands/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/brands", "/api/brands/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/brands/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/brands/**").hasRole("ADMIN")
 
                         // ====== AUTHENTICATED ENDPOINTS ===============
 
                         // All other requests require authentication
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
 
                 // Add JWT filter before UsernamePasswordAuthenticationFilter
                 .authenticationProvider(authenticationProvider())
